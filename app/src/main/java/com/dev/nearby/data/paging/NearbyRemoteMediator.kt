@@ -1,6 +1,5 @@
 package com.dev.nearby.data.paging
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -25,12 +24,10 @@ internal class NearbyRemoteMediator(
     override suspend fun load(loadType: LoadType, state: PagingState<Int, VenueEntity>): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
-                Log.d("TestDD", "initial refresh")
                 1
             }
 
             LoadType.APPEND -> {
-                Log.d("TestDD", "append $nextKey")
                 nextKey
             }
 
@@ -38,11 +35,9 @@ internal class NearbyRemoteMediator(
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
         }
-        Log.d("TestDD", "Loading data with distance ${range} and page $nextKey")
         try {
             val remoteResponse = networkDataSource.fetchNearbyVenues(12.971599, 77.594566, page, range)
             val endOfPaginationReached = remoteResponse.venues.isEmpty()
-            Log.d("TestDD", "${remoteResponse}")
             nextKey = remoteResponse.meta.page + 1
             nearbyDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -55,7 +50,6 @@ internal class NearbyRemoteMediator(
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (error: Exception) {
-            Log.d("TestDD", "${error.localizedMessage}")
             return MediatorResult.Error(error)
         }
     }

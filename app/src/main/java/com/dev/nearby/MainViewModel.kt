@@ -1,28 +1,18 @@
 package com.dev.nearby
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadState
-import androidx.paging.LoadStates
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.dev.nearby.data.local.NearbyDatabase
-import com.dev.nearby.data.local.VenueEntity
 import com.dev.nearby.data.network.NearbyNetworkDataSource
 import com.dev.nearby.data.paging.NearbyRemoteMediator
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagingApi::class)
 internal class MainViewModel(
@@ -40,7 +30,6 @@ internal class MainViewModel(
         } else {
             (distance * MAX_DISTANCE).toInt()
         }
-        Log.d("TestDD", "distance changes $distance range $range")
         Pager(
             config = PagingConfig(pageSize = 10, prefetchDistance = 10, initialLoadSize = 10),
             pagingSourceFactory = {
@@ -49,23 +38,6 @@ internal class MainViewModel(
             remoteMediator = NearbyRemoteMediator(nearbyNetworkDataSource, nearbyDatabase, range)
         ).flow
     }
-
-//    var pagingData: StateFlow<PagingData<VenueEntity>> = MutableStateFlow(
-//        PagingData.empty(
-//            sourceLoadStates = LoadStates(
-//                LoadState.Loading,
-//                LoadState.Loading,
-//                LoadState.Loading
-//            ),
-//            mediatorLoadStates = LoadStates(
-//                LoadState.Loading,
-//                LoadState.Loading,
-//                LoadState.Loading
-//            )
-//        )
-//    )
-
-
 
     fun onDistanceFilterChange(value: Float) {
         _distanceFilterState.value = value
