@@ -8,10 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.dev.nearby.data.local.VenueEntity
 import com.dev.nearby.data.models.Venue
 
 @Composable
-fun Venue(venue: Venue, modifier: Modifier = Modifier) {
+fun Venue(venue: VenueEntity, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()

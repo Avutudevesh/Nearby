@@ -13,6 +13,7 @@ internal interface NearbyService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("page") page: Int,
+        @Query("range") range: Int,
         @Query("per_page") perPage: Int = 10,
         @Query("client_id") clientId: String = CLIENT_ID
     ): NearbyRemoteResponse
