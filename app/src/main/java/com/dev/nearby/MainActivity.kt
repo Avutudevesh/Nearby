@@ -3,41 +3,53 @@ package com.dev.nearby
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.dev.nearby.ui.composables.VenueList
 import com.dev.nearby.ui.theme.NearbyTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels { MainViewModel.Factory }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.fetchNearByLocations(12.971599, 77.594566)
         setContent {
             NearbyTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
+                    NearbyContainer()
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    @Composable
+    private fun NearbyContainer(modifier: Modifier = Modifier) {
+        val state by viewModel.uiState.collectAsState()
+        Box(modifier = modifier.fillMaxSize()) {
+            when (val uiState = state) {
+                is UiState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NearbyTheme {
-        Greeting("Android")
+                is UiState.Error -> {
+                    Text(text = "Sorry, something is wrong", modifier = Modifier.align(Alignment.Center))
+                }
+
+                is UiState.Success -> {
+                    VenueList(venues = uiState.venues)
+                }
+            }
+        }
     }
 }
