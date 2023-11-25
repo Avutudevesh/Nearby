@@ -7,6 +7,6 @@ internal class NearbyNetworkDataSourceImpl(
     private val nearbyService: NearbyService
 ) : NearbyNetworkDataSource {
     override suspend fun fetchNearbyVenues(lat: Double, lng: Double, page: Int, distanceFilter: Int): NearbyRemoteResponse {
-        return nearbyService.fetchNearByVenues(lat, lng, page, distanceFilter)
+        return nearbyService.fetchNearByVenues(lat, lng, page, "${distanceFilter}mi")
     }
 }

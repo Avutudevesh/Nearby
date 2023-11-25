@@ -32,12 +32,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             NearbyTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    val venues = viewModel.nearByLocations.collectAsLazyPagingItems()
+                    val venues = viewModel.pageData.collectAsLazyPagingItems()
                     Column {
                         NearbyContainer(venues = venues, modifier = Modifier.weight(1f))
                         FilterContainer(onFilterChange = {
                             viewModel.onDistanceFilterChange(it)
-                            venues.refresh()
                         })
                     }
                 }
